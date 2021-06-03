@@ -8,3 +8,6 @@ pub mod types;
 #[cfg(feature = "client_api")]
 pub use self::porkbun::{AsyncPorkbun, Porkbun, PorkbunError};
 pub use crate::types::*;
+
+#[cfg(test)]
+mod test;

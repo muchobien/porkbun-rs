@@ -22,15 +22,20 @@ where
         let mut url = client.rest_endpoint(&self.endpoint.endpoint())?;
         self.endpoint.parameters().add_to_url(&mut url);
 
-        let req = Request::builder()
+        let mut req = Request::builder()
             .method(self.endpoint.method())
             .uri(query::url_to_http_uri(url));
 
         let mut body = self.endpoint.body();
         body.append(&mut client.auth());
 
-        let data = serde_json::to_vec(&body)?;
-        let req = req.header(header::CONTENT_TYPE, "application/json");
+        let data = match body.len() {
+            0 => vec![],
+            _ => {
+                req = req.header(header::CONTENT_TYPE, "application/json");
+                serde_json::to_vec(&body)?
+            }
+        };
 
         let rsp = client.rest(req, data)?;
         if !rsp.status().is_success() {
@@ -52,15 +57,20 @@ where
         let mut url = client.rest_endpoint(&self.endpoint.endpoint())?;
         self.endpoint.parameters().add_to_url(&mut url);
 
-        let req = Request::builder()
+        let mut req = Request::builder()
             .method(self.endpoint.method())
             .uri(query::url_to_http_uri(url));
 
         let mut body = self.endpoint.body();
         body.append(&mut client.auth());
 
-        let data = serde_json::to_vec(&body)?;
-        let req = req.header(header::CONTENT_TYPE, "application/json");
+        let data = match body.len() {
+            0 => vec![],
+            _ => {
+                req = req.header(header::CONTENT_TYPE, "application/json");
+                serde_json::to_vec(&body)?
+            }
+        };
 
         let rsp = client.rest_async(req, data).await?;
         if !rsp.status().is_success() {
