@@ -42,3 +42,7 @@ async fn main() -> eyre::Result<()> {
 ## API Documentation
 
 - [API Docs](https://porkbun.com/api/json/v3/documentation)
+
+## LICENSE
+
+- [MIT](./LICENSE)
