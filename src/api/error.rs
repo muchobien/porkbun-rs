@@ -131,7 +131,7 @@ mod tests {
     }
 
     #[test]
-    fn gitlab_error_message_unrecognized() {
+    fn porkbun_error_message_unrecognized() {
         let err_obj = json!({
             "some_weird_key": "an even weirder value",
         });
