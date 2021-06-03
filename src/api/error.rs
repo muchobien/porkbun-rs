@@ -102,3 +102,45 @@ where
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use serde_json::json;
+    use thiserror::Error;
+
+    use crate::api::ApiError;
+
+    #[derive(Debug, Error)]
+    #[error("my error")]
+    enum MyError {}
+
+    #[test]
+    fn porkbun_error_message_string() {
+        let obj = json!({
+            "status": "ERROR",
+            "message": "All HTTP request must use POST."
+        });
+
+        let err: ApiError<MyError> = ApiError::from_porkbun(obj);
+        if let ApiError::PorkBun { message, status } = err {
+            assert_eq!(message, "All HTTP request must use POST.");
+            assert_eq!(status, "ERROR");
+        } else {
+            panic!("unexpected error: {}", err);
+        }
+    }
+
+    #[test]
+    fn gitlab_error_message_unrecognized() {
+        let err_obj = json!({
+            "some_weird_key": "an even weirder value",
+        });
+
+        let err: ApiError<MyError> = ApiError::from_porkbun(err_obj.clone());
+        if let ApiError::PorkBunUnrecognized { obj } = err {
+            assert_eq!(obj, err_obj);
+        } else {
+            panic!("unexpected error: {}", err);
+        }
+    }
+}
