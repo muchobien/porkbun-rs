@@ -22,3 +22,33 @@ impl Endpoint for Ping {
         "ping".into()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use http::Method;
+
+    use crate::{
+        api::{self, Query},
+        endpoints::Ping,
+        test::client::{ExpectedUrl, SingleTestClient},
+    };
+
+    #[test]
+    fn empty_is_sufficient() {
+        Ping::builder().build().unwrap();
+    }
+
+    #[test]
+    fn endpoint() {
+        let endpoint = ExpectedUrl::builder()
+            .method(Method::POST)
+            .endpoint("ping")
+            .build()
+            .unwrap();
+        let client = SingleTestClient::new_raw(endpoint, "");
+
+        let endpoint = Ping::builder().build().unwrap();
+
+        api::ignore(endpoint).query(&client).unwrap();
+    }
+}
