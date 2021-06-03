@@ -179,3 +179,17 @@ impl<'a> QueryParams<'a> {
         pairs.extend_pairs(self.params.iter());
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::api::ParamValue;
+
+    #[test]
+    fn bool_str() {
+        let items = &[(true, "true"), (false, "false")];
+
+        for (i, s) in items {
+            assert_eq!((*i).as_value(), *s);
+        }
+    }
+}
