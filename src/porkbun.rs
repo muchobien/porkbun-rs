@@ -3,10 +3,8 @@ use async_trait::async_trait;
 use bytes::Bytes;
 use http::Response as HttpResponse;
 use log::{debug, error};
-use reqwest::blocking::Client;
-use reqwest::Client as AsyncClient;
-use serde_json::Map;
-use serde_json::Value;
+use reqwest::{blocking::Client, Client as AsyncClient};
+use serde_json::{Map, Value};
 use std::{
     convert::TryInto,
     fmt::{self, Debug},
