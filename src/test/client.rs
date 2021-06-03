@@ -57,6 +57,16 @@ impl ExpectedUrl {
     }
 }
 
+impl ExpectedUrlBuilder {
+    pub fn body_json<T>(&mut self, body: &T) -> &mut Self
+    where
+        T: Serialize,
+    {
+        self.body = Some(serde_json::to_vec(body).unwrap());
+        self
+    }
+}
+
 #[derive(Debug, Clone)]
 struct MockResponse {
     status: StatusCode,
