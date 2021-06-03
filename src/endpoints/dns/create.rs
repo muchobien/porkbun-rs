@@ -70,7 +70,7 @@ mod tests {
     #[test]
     fn domain_is_necessary() {
         let err = CreateDns::builder()
-            .record(DnsContent::CNAME {
+            .record(DnsContent::Cname {
                 content: "".to_string(),
             })
             .build()
@@ -82,7 +82,7 @@ mod tests {
     fn domain_and_record_are_sufficient() {
         CreateDns::builder()
             .domain("example.com")
-            .record(DnsContent::CNAME {
+            .record(DnsContent::Cname {
                 content: "".to_string(),
             })
             .build()
@@ -100,7 +100,7 @@ mod tests {
                 "ttl": "600",
                 "prio": "600",
                 "type": "MX",
-                "content": "cname",
+                "content": "cnCname",
             }))
             .build()
             .unwrap();
@@ -108,9 +108,9 @@ mod tests {
 
         let endpoint = CreateDns::builder()
             .domain("example.com")
-            .record(DnsContent::MX {
+            .record(DnsContent::Mx {
                 priority: 600,
-                content: "cname".to_string(),
+                content: "cnCname".to_string(),
             })
             .ttl(600)
             .name("*")

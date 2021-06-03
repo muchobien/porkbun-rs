@@ -55,7 +55,7 @@ impl Porkbun {
         let client = Client::new();
         let url = Url::parse("https://porkbun.com/api/json/v3/")?;
 
-        Ok(Self { auth, client, url })
+        Ok(Self { client, url, auth })
     }
 }
 
@@ -175,6 +175,6 @@ impl AsyncPorkbun {
         let client = AsyncClient::new();
         let url = Url::parse("https://porkbun.com/api/json/v3/")?;
 
-        Ok(Self { auth, client, url })
+        Ok(Self { client, url, auth })
     }
 }

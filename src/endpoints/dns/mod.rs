@@ -13,20 +13,20 @@ pub use self::retrieve::*;
 
 #[derive(Debug, Clone)]
 pub enum DnsContent {
-    NS { content: String },
+    Ns { content: String },
     A { content: Ipv4Addr },
-    TXT { content: String },
-    CAA { content: String },
-    TLSA { content: String },
-    CNAME { content: String },
-    AAAA { content: Ipv6Addr },
-    MX { content: String, priority: u16 },
-    SRV { content: String, priority: u16 },
+    Txt { content: String },
+    Caa { content: String },
+    Tlsa { content: String },
+    Cname { content: String },
+    Aaaa { content: Ipv6Addr },
+    Mx { content: String, priority: u16 },
+    Srv { content: String, priority: u16 },
 }
 
 pub(crate) fn fill_body_with_record(body: &mut Map<String, Value>, record: &DnsContent) {
     match record {
-        DnsContent::NS { content } => {
+        DnsContent::Ns { content } => {
             body.insert("type".into(), "NS".into());
             body.insert("content".into(), content.to_string().into());
         }
@@ -34,32 +34,32 @@ pub(crate) fn fill_body_with_record(body: &mut Map<String, Value>, record: &DnsC
             body.insert("type".into(), "A".into());
             body.insert("content".into(), content.to_string().into());
         }
-        DnsContent::TXT { content } => {
+        DnsContent::Txt { content } => {
             body.insert("type".into(), "TXT".into());
             body.insert("content".into(), content.to_string().into());
         }
-        DnsContent::CAA { content } => {
+        DnsContent::Caa { content } => {
             body.insert("type".into(), "CAA".into());
             body.insert("content".into(), content.to_string().into());
         }
-        DnsContent::TLSA { content } => {
+        DnsContent::Tlsa { content } => {
             body.insert("type".into(), "TLSA".into());
             body.insert("content".into(), content.to_string().into());
         }
-        DnsContent::CNAME { content } => {
+        DnsContent::Cname { content } => {
             body.insert("type".into(), "CNAME".into());
             body.insert("content".into(), content.to_string().into());
         }
-        DnsContent::AAAA { content } => {
+        DnsContent::Aaaa { content } => {
             body.insert("type".into(), "AAAA".into());
             body.insert("content".into(), content.to_string().into());
         }
-        DnsContent::MX { content, priority } => {
+        DnsContent::Mx { content, priority } => {
             body.insert("type".into(), "MX".into());
             body.insert("prio".into(), priority.to_string().into());
             body.insert("content".into(), content.to_string().into());
         }
-        DnsContent::SRV { content, priority } => {
+        DnsContent::Srv { content, priority } => {
             body.insert("type".into(), "SRV".into());
             body.insert("prio".into(), priority.to_string().into());
             body.insert("content".into(), content.to_string().into());

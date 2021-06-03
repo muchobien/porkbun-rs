@@ -71,7 +71,7 @@ mod tests {
     #[test]
     fn domain_is_necessary() {
         let err = EditDns::builder()
-            .record(DnsContent::CNAME {
+            .record(DnsContent::Cname {
                 content: "".to_string(),
             })
             .build()
@@ -83,7 +83,7 @@ mod tests {
     fn id_is_necessary() {
         let err = EditDns::builder()
             .domain("")
-            .record(DnsContent::CNAME {
+            .record(DnsContent::Cname {
                 content: "".to_string(),
             })
             .build()
@@ -96,7 +96,7 @@ mod tests {
         EditDns::builder()
             .id("1234")
             .domain("example.com")
-            .record(DnsContent::CNAME {
+            .record(DnsContent::Cname {
                 content: "".to_string(),
             })
             .build()
@@ -114,7 +114,7 @@ mod tests {
                 "ttl": "600",
                 "prio": "600",
                 "type": "MX",
-                "content": "cname",
+                "content": "cnameCname",
             }))
             .build()
             .unwrap();
@@ -124,9 +124,9 @@ mod tests {
             .id("1234")
             .domain("example.com")
             .name("*")
-            .record(DnsContent::MX {
+            .record(DnsContent::Mx {
                 priority: 600,
-                content: "cname".to_string(),
+                content: "cnameCname".to_string(),
             })
             .ttl(600)
             .build()
