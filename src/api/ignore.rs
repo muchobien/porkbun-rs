@@ -81,3 +81,111 @@ where
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::borrow::Cow;
+
+    use http::{Method, StatusCode};
+    use serde_json::json;
+
+    use crate::api::{self, ApiError, AsyncQuery, Endpoint, Query};
+    use crate::test::client::{ExpectedUrl, SingleTestClient};
+
+    struct Dummy;
+
+    impl Endpoint for Dummy {
+        fn method(&self) -> Method {
+            Method::GET
+        }
+
+        fn endpoint(&self) -> Cow<'static, str> {
+            "dummy".into()
+        }
+    }
+
+    #[derive(Debug)]
+    struct DummyResult {
+        value: u8,
+    }
+
+    #[test]
+    fn test_porkbun_non_json_response() {
+        let endpoint = ExpectedUrl::builder().endpoint("dummy").build().unwrap();
+        let client = SingleTestClient::new_raw(endpoint, "not json");
+
+        api::ignore(Dummy).query(&client).unwrap()
+    }
+
+    #[tokio::test]
+    async fn test_porkbun_non_json_response_async() {
+        let endpoint = ExpectedUrl::builder().endpoint("dummy").build().unwrap();
+        let client = SingleTestClient::new_raw(endpoint, "not json");
+
+        api::ignore(Dummy).query_async(&client).await.unwrap()
+    }
+
+    #[test]
+    fn test_porkbun_error_bad_json() {
+        let endpoint = ExpectedUrl::builder()
+            .endpoint("dummy")
+            .status(StatusCode::NOT_FOUND)
+            .build()
+            .unwrap();
+        let client = SingleTestClient::new_raw(endpoint, "");
+
+        let err = api::ignore(Dummy).query(&client).unwrap_err();
+        if let ApiError::Json { source } = err {
+            assert_eq!(
+                format!("{}", source),
+                "EOF while parsing a value at line 1 column 0",
+            );
+        } else {
+            panic!("unexpected error: {}", err);
+        }
+    }
+
+    #[test]
+    fn test_porkbun_error_detection() {
+        let endpoint = ExpectedUrl::builder()
+            .endpoint("dummy")
+            .status(StatusCode::NOT_FOUND)
+            .build()
+            .unwrap();
+        let client = SingleTestClient::new_json(
+            endpoint,
+            &json!({
+                "message": "dummy error message",
+                "status": "ERROR",
+            }),
+        );
+
+        let err = api::ignore(Dummy).query(&client).unwrap_err();
+        if let ApiError::PorkBun { message, status } = err {
+            assert_eq!(message, "dummy error message");
+            assert_eq!(status, "ERROR")
+        } else {
+            panic!("unexpected error: {}", err);
+        }
+    }
+
+    #[test]
+    fn test_porkbun_error_detection_unknown() {
+        let endpoint = ExpectedUrl::builder()
+            .endpoint("dummy")
+            .status(StatusCode::NOT_FOUND)
+            .build()
+            .unwrap();
+        let err_obj = json!({
+            "bogus": "dummy error message",
+        });
+        let client = SingleTestClient::new_json(endpoint, &err_obj);
+
+        let err = api::ignore(Dummy).query(&client).unwrap_err();
+        if let ApiError::PorkBunUnrecognized { obj } = err {
+            assert_eq!(obj, err_obj);
+        } else {
+            panic!("unexpected error: {}", err);
+        }
+    }
+}
