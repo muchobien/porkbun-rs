@@ -1,6 +1,6 @@
 # Rust library for accessing the Porkbun API
 
-An Porkbun API client written in 🦀.
+A Porkbun API client written in 🦀.
 
 [Porkbun](https://porkbun.com/) is a 🦀 client library for accessing the Porkbun API.
 
