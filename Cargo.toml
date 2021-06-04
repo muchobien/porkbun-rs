@@ -6,6 +6,12 @@ authors = [
   "Kevin López <lokeon@muchobien.dev>",
 ]
 edition = "2018"
+description = "Porkbun API client"
+repository = "https://github.com/muchobien/porkbun-rs"
+readme = "README.md"
+license = "MIT"
+keywords = ["porkbun", "api", "client"]
+categories = ["web-programming::http-client", "api-bindings"]
 
 [features]
 default = ["client_api"]
