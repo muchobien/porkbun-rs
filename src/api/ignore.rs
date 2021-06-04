@@ -19,13 +19,10 @@ where
     C: Client,
 {
     fn query(&self, client: &C) -> Result<(), ApiError<C::Error>> {
-        let mut url = client.rest_endpoint(&self.endpoint.endpoint())?;
-        self.endpoint.parameters().add_to_url(&mut url);
-
+        let url = client.rest_endpoint(&self.endpoint.endpoint())?;
         let mut req = Request::builder()
             .method(self.endpoint.method())
             .uri(query::url_to_http_uri(url));
-
         let mut body = self.endpoint.body();
         body.append(&mut client.auth());
 
@@ -54,9 +51,7 @@ where
     C: AsyncClient + Sync,
 {
     async fn query_async(&self, client: &C) -> Result<(), ApiError<C::Error>> {
-        let mut url = client.rest_endpoint(&self.endpoint.endpoint())?;
-        self.endpoint.parameters().add_to_url(&mut url);
-
+        let url = client.rest_endpoint(&self.endpoint.endpoint())?;
         let mut req = Request::builder()
             .method(self.endpoint.method())
             .uri(query::url_to_http_uri(url));

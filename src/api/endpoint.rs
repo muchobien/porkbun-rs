@@ -2,7 +2,7 @@ use super::{
     client::{AsyncClient, Client},
     error::ApiError,
     query::{self, AsyncQuery},
-    Query, QueryParams,
+    Query,
 };
 use async_trait::async_trait;
 use http::{header, Method, Request};
@@ -17,11 +17,6 @@ pub trait Endpoint {
 
     /// The path to the endpoint.
     fn endpoint(&self) -> Cow<'static, str>;
-
-    /// Query parameters for the endpoint.
-    fn parameters(&self) -> QueryParams {
-        QueryParams::default()
-    }
 
     /// The body for the endpoint.
     ///
@@ -38,13 +33,10 @@ where
     C: Client,
 {
     fn query(&self, client: &C) -> Result<T, ApiError<C::Error>> {
-        let mut url = client.rest_endpoint(&self.endpoint())?;
-        self.parameters().add_to_url(&mut url);
-
+        let url = client.rest_endpoint(&self.endpoint())?;
         let mut req = Request::builder()
             .method(self.method())
             .uri(query::url_to_http_uri(url));
-
         let mut body = self.body();
         body.append(&mut client.auth());
 
@@ -75,13 +67,10 @@ where
     C: AsyncClient + Sync,
 {
     async fn query_async(&self, client: &C) -> Result<T, ApiError<C::Error>> {
-        let mut url = client.rest_endpoint(&self.endpoint())?;
-        self.parameters().add_to_url(&mut url);
-
+        let url = client.rest_endpoint(&self.endpoint())?;
         let mut req = Request::builder()
             .method(self.method())
             .uri(query::url_to_http_uri(url));
-
         let mut body = self.body();
         body.append(&mut client.auth());
 
